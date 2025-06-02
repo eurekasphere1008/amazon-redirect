@@ -34,6 +34,23 @@
     }
   </style>
 </head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-357072741'); // replace with your GA4 ID
+</script>
+goBtn.onclick = () => {
+  gtag('event', 'click', {
+    event_category: 'Redirect',
+    event_label: 'Amazon Button Click'
+  });
+  window.location.href = redirectURL;
+};
+
 <body>
   <h1>Redirecting to Amazon...</h1>
   <p id="status">Detecting your country...</p>
