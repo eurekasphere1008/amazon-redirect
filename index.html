@@ -4,6 +4,16 @@
   <meta charset="UTF-8" />
   <title>Redirecting to Amazon</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-357072741"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-357072741');
+  </script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -34,23 +44,6 @@
     }
   </style>
 </head>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-357072741'); // replace with your GA4 ID
-</script>
-goBtn.onclick = () => {
-  gtag('event', 'click', {
-    event_category: 'Redirect',
-    event_label: 'Amazon Button Click'
-  });
-  window.location.href = redirectURL;
-};
-
 <body>
   <h1>Redirecting to Amazon...</h1>
   <p id="status">Detecting your country...</p>
@@ -86,22 +79,40 @@ goBtn.onclick = () => {
 
         goBtn.style.display = "inline-block";
         goBtn.onclick = () => {
+          gtag('event', 'click', {
+            event_category: 'Redirect',
+            event_label: 'Amazon Button Click'
+          });
           window.location.href = redirectURL;
         };
 
-        // Auto redirect after 1.5 seconds
         setTimeout(() => {
+          gtag('event', 'auto_redirect', {
+            event_category: 'Redirect',
+            event_label: 'Auto Redirect to Amazon'
+          });
           window.location.href = redirectURL;
         }, 1500);
 
       } catch (e) {
         status.textContent = "Could not detect your country, redirecting to default Amazon.";
+        const redirectURL = links.default;
+
         goBtn.style.display = "inline-block";
         goBtn.onclick = () => {
-          window.location.href = links.default;
+          gtag('event', 'click', {
+            event_category: 'Redirect',
+            event_label: 'Amazon Button Click (Fallback)'
+          });
+          window.location.href = redirectURL;
         };
+
         setTimeout(() => {
-          window.location.href = links.default;
+          gtag('event', 'auto_redirect', {
+            event_category: 'Redirect',
+            event_label: 'Auto Redirect Fallback'
+          });
+          window.location.href = redirectURL;
         }, 1500);
       }
     }
@@ -110,4 +121,3 @@ goBtn.onclick = () => {
   </script>
 </body>
 </html>
-
