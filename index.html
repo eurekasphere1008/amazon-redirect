@@ -9,7 +9,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       padding-top: 100px;
-      background-color: #ffffff;
+      background-color: #fff;
     }
     h1 {
       font-size: 28px;
@@ -41,36 +41,51 @@
 
   <script>
     const links = {
-      IN: "https://www.amazon.in/dp/B0FBH4YCQN",
-      AU: "https://www.amazon.com.au/dp/B0FBH4YCQN",
-      MX: "https://www.amazon.com.mx/dp/B0FBH4YCQN",
-      CA: "https://www.amazon.ca/dp/B0FBH4YCQN",
-      JP: "https://www.amazon.co.jp/dp/B0FBH4YCQN",
-      IT: "https://www.amazon.it/dp/B0FBH4YCQN",
-      ES: "https://www.amazon.es/dp/B0FBH4YCQN",
-      FR: "https://www.amazon.fr/dp/B0FBH4YCQN",
-      DE: "https://www.amazon.de/dp/B0FBH4YCQN",
-      GB: "https://www.amazon.co.uk/dp/B0FBH4YCQN",
-      US: "https://www.amazon.com/dp/B0FBH4YCQN",
-      default: "https://www.amazon.com/dp/B0FBH4YCQN"
+      IN: "https://urlgeni.us/amazon/D8psP",
+      US: "https://urlgeni.us/amazon/V_hjS",
+      GB: "https://urlgeni.us/amazon/xgf2L",
+      DE: "https://urlgeni.us/amazon/O8OFq",
+      FR: "https://urlgeni.us/amazon/tDCMz",
+      ES: "https://urlgeni.us/amazon/KM71y",
+      IT: "https://urlgeni.us/amazon/jAGIB",
+      JP: "https://urlgeni.us/amazon/CTsnd",
+      CA: "https://urlgeni.us/amazon/cv5Yf",
+      MX: "https://urlgeni.us/amazon/ma_fU",
+      AU: "https://urlgeni.us/amazon/xqcsX",
+      default: "https://urlgeni.us/amazon/V_hjS"
     };
 
     async function detectCountryAndRedirect() {
-      try {
-        const res = await fetch("https://ipapi.co/json/");
-        const data = await res.json();
-        const country = data.country_code;
-        const amazonURL = links[country] || links.default;
-        document.getElementById("status").textContent = `Detected: ${country}. Ready to open Amazon.`;
+      const status = document.getElementById("status");
+      const goBtn = document.getElementById("go");
 
-        const goBtn = document.getElementById("go");
+      try {
+        const response = await fetch("https://ipapi.co/json/");
+        const data = await response.json();
+        const country = data.country_code || "default";
+        status.textContent = `Detected country: ${country}`;
+
+        const redirectURL = links[country] || links.default;
+
         goBtn.style.display = "inline-block";
-        goBtn.onclick = () => window.location.href = amazonURL;
+        goBtn.onclick = () => {
+          window.location.href = redirectURL;
+        };
+
+        // Auto redirect after 1.5 seconds
+        setTimeout(() => {
+          window.location.href = redirectURL;
+        }, 1500);
+
       } catch (e) {
-        document.getElementById("status").textContent = "Couldn't detect country. Using default Amazon.";
-        const goBtn = document.getElementById("go");
+        status.textContent = "Could not detect your country, redirecting to default Amazon.";
         goBtn.style.display = "inline-block";
-        goBtn.onclick = () => window.location.href = links.default;
+        goBtn.onclick = () => {
+          window.location.href = links.default;
+        };
+        setTimeout(() => {
+          window.location.href = links.default;
+        }, 1500);
       }
     }
 
@@ -78,3 +93,4 @@
   </script>
 </body>
 </html>
+
