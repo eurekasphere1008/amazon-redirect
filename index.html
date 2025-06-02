@@ -33,20 +33,11 @@
       background-color: #e68a00;
     }
   </style>
-
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-357072741"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-357072741');
-  </script>
 </head>
 <body>
   <h1>Redirecting to Amazon...</h1>
   <p id="status">Detecting your country...</p>
-  <button id="go" style="display:none;">Open in Amazon</button>
+  <button id="go" style="display:none;">Open in Browser</button>
 
   <script>
     const links = {
@@ -64,7 +55,22 @@
       default: "https://urlgeni.us/amazon/V_hjS"
     };
 
-    async function detectCountryAndRedirect() {
+    function isInInstagramBrowser() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      return ua.includes("Instagram");
+    }
+
+    function openInDefaultBrowser(url) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    async function redirect() {
       const status = document.getElementById("status");
       const goBtn = document.getElementById("go");
 
@@ -72,55 +78,25 @@
         const response = await fetch("https://ipapi.co/json/");
         const data = await response.json();
         const country = data.country_code || "default";
-        status.textContent = `Detected country: ${country}`;
-
         const redirectURL = links[country] || links.default;
 
-        goBtn.style.display = "inline-block";
-        goBtn.onclick = () => {
-          gtag('event', 'click', {
-            event_category: 'Redirect',
-            event_label: 'Amazon Button Click',
-            value: 1
-          });
-          window.location.href = redirectURL;
-        };
-
-        // Auto redirect after 1.5 seconds
-        setTimeout(() => {
-          gtag('event', 'auto_redirect', {
-            event_category: 'Redirect',
-            event_label: `Auto to ${country}`,
-            value: 1
-          });
-          window.location.href = redirectURL;
-        }, 1500);
-
+        if (isInInstagramBrowser()) {
+          status.innerHTML = `Instagram browser detected.<br><b>Tap the ⋮ (menu) and choose "Open in Browser"</b> to complete your purchase.`;
+          goBtn.style.display = "inline-block";
+          goBtn.onclick = () => openInDefaultBrowser(redirectURL);
+        } else {
+          openInDefaultBrowser(redirectURL);
+        }
       } catch (e) {
-        status.textContent = "Could not detect your country, redirecting to default Amazon.";
-        const fallbackURL = links.default;
-        goBtn.style.display = "inline-block";
-        goBtn.onclick = () => {
-          gtag('event', 'click', {
-            event_category: 'Redirect',
-            event_label: 'Amazon Fallback Button Click',
-            value: 1
-          });
-          window.location.href = fallbackURL;
-        };
-        setTimeout(() => {
-          gtag('event', 'auto_redirect', {
-            event_category: 'Redirect',
-            event_label: 'Fallback Auto',
-            value: 1
-          });
-          window.location.href = fallbackURL;
-        }, 1500);
+        status.textContent = "Could not detect location. Opening default Amazon.";
+        openInDefaultBrowser(links.default);
       }
     }
 
-    detectCountryAndRedirect();
+    redirect();
   </script>
 </body>
 </html>
 
+       
+       
